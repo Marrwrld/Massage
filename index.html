@@ -184,8 +184,11 @@
     background: rgba(0,0,0,.35);
     border:1px solid rgba(255,0,61,.20);
     box-shadow:0 0 24px rgba(255,0,61,.15);
-    animation:fadeIn .8s forwards;
     text-align:left;
+  }
+  .finalBox.show{
+    display:block;
+    animation:fadeIn .55s ease forwards;
   }
   .finalTitle{
     font-weight:1000;
@@ -203,7 +206,7 @@
   }
   .bookingId{
     margin-top:10px;
-    display:inline-flex;
+    display:flex;
     gap:10px;
     align-items:center;
     padding:10px 12px;
@@ -212,20 +215,15 @@
     border:1px solid rgba(255,0,61,.25);
     color:#ffd6df;
     font-weight:950;
-    width:100%;
     justify-content:space-between;
-  }
-  .bookingLeft{
-    display:flex;
-    gap:10px;
-    align-items:center;
-    min-width:0;
   }
   .bookingVal{
     letter-spacing:.8px;
     white-space:nowrap;
     overflow:hidden;
     text-overflow:ellipsis;
+    max-width: 55%;
+    text-align:right;
   }
   .copyBtn{
     border:1px solid rgba(255,255,255,.18);
@@ -236,13 +234,12 @@
     cursor:pointer;
     font-weight:950;
     -webkit-tap-highlight-color: transparent;
-    flex: 0 0 auto;
   }
   .copyBtn:active{ transform: scale(.98); }
 
   @keyframes fadeIn{
-    from{opacity:0;transform:translateY(10px) scale(.96);}
-    to{opacity:1;transform:translateY(0) scale(1);}
+    from{opacity:0; transform: translateY(8px) scale(.98);}
+    to{opacity:1; transform: translateY(0) scale(1);}
   }
 
   .musicBtn{
@@ -301,10 +298,8 @@
     <p class="finalText" id="finalText"></p>
 
     <div class="bookingId" aria-label="Booking ID">
-      <div class="bookingLeft">
-        <span>Booking ID:</span>
-        <span id="bookingIdValue" class="bookingVal"></span>
-      </div>
+      <span>Booking ID:</span>
+      <span id="bookingIdValue" class="bookingVal"></span>
       <button class="copyBtn" id="copyBtn" type="button">Copy</button>
     </div>
   </div>
@@ -330,7 +325,7 @@
     selectedTime = pill.dataset.time;
   });
 
-  // Music (needs user gesture on iOS/iPadOS)
+  // Music (needs a user gesture)
   const bgMusic = document.getElementById("bgMusic");
   const musicToggle = document.getElementById("musicToggle");
   let musicOn = false;
@@ -356,18 +351,15 @@
     await startMusic();
   }, { once:true });
 
-  musicToggle.addEventListener("click", async () => {
-    try{
-      if(!musicOn){
-        await startMusic();
-      }else{
-        bgMusic.pause();
-        musicOn = false;
-        setMusicLabel();
-      }
-    }catch(e){}
-  });
-
+  musicToggle.onclick = async () => {
+    if(!musicOn){
+      await startMusic();
+    }else{
+      bgMusic.pause();
+      musicOn = false;
+      setMusicLabel();
+    }
+  };
   setMusicLabel();
 
   // “You sure?” + YES grows
@@ -393,39 +385,27 @@
     return `ANZ-0214-${tail}`;
   }
 
-  function moveNo(e){
-    if(e) e.preventDefault();
-
+  function onNo(){
     attempts++;
 
-    // YES grows
     const scale = Math.min(1 + attempts * 0.18, 2.6);
     yesBtn.style.transform = `translate(-50%,-50%) scale(${scale})`;
 
-    // “You sure?”
     message.textContent = sureMessages[Math.min(attempts - 1, sureMessages.length - 1)];
     vibrate(25);
 
-    // After 6, NO becomes YES
     if(attempts >= 6){
       noBtn.textContent = "Okay… YES 😩";
       noBtn.style.background = "linear-gradient(45deg,#ff0040,#ff3366)";
       noBtn.style.color = "#fff";
-      noBtn.onclick = () => yesBtn.click();
+      noBtn.onclick = onYes; // convert NO into YES
     }
   }
 
-  // NO: handle both pointer + click for maximum compatibility
-  noBtn.addEventListener("pointerdown", moveNo, { passive:false });
-  noBtn.addEventListener("click", moveNo);
-
-  function confirmAppointment(e){
-    if(e) e.preventDefault();
-
+  function onYes(){
     message.textContent = "Perfect choice 😌🔥";
 
-    const bookingId = generateBookingId();
-    bookingIdValue.textContent = bookingId;
+    bookingIdValue.textContent = generateBookingId();
 
     finalText.textContent =
 `Thank you for choosing our services 😌
@@ -433,25 +413,29 @@ Your massage appointment is confirmed for
 February 14 at ${selectedTime}.
 We look forward to providing your relaxation experience. 💆‍♀️🔥`;
 
+    finalBox.classList.add("show");
+
+    // Make sure it becomes visible even if something weird happens
     finalBox.style.display = "block";
 
-    // Hide buttons so nothing overlaps
+    // Scroll into view so you SEE it
+    finalBox.scrollIntoView({ behavior: "smooth", block: "nearest" });
+
     yesBtn.style.display = "none";
     noBtn.style.display = "none";
 
-    // Lock time choice
     timeOptions.style.pointerEvents = "none";
     timeOptions.style.opacity = "0.95";
 
     vibrate(40);
   }
 
-  // YES: handle both pointer + click for maximum compatibility
-  yesBtn.addEventListener("pointerdown", confirmAppointment, { passive:false });
-  yesBtn.addEventListener("click", confirmAppointment);
+  // Use simple onclick for maximum reliability
+  noBtn.onclick = onNo;
+  yesBtn.onclick = onYes;
 
   // Copy Booking ID
-  copyBtn.addEventListener("click", async () => {
+  copyBtn.onclick = async () => {
     const text = bookingIdValue.textContent || "";
     try{
       await navigator.clipboard.writeText(text);
@@ -460,7 +444,7 @@ We look forward to providing your relaxation experience. 💆‍♀️🔥`;
     }catch(e){
       message.textContent = "Copy not supported here — Booking ID: " + text;
     }
-  });
+  };
 </script>
 
 </body>

@@ -27,12 +27,11 @@
     background:radial-gradient(circle at top,var(--bg1),var(--bg2));
     overflow:hidden;
     color:#fff;
-    padding: 18px;
-    -webkit-text-size-adjust: 100%;
-    touch-action: manipulation;
+    padding:18px;
+    -webkit-text-size-adjust:100%;
+    touch-action:manipulation;
   }
 
-  /* soft “tantric” glow */
   .glowBg{
     position:fixed;
     inset:-40vh;
@@ -57,7 +56,7 @@
       0 0 28px rgba(255,0,61,.35),
       0 0 70px rgba(255,0,120,.22),
       0 24px 80px rgba(0,0,0,.55);
-    border: 1px solid rgba(255, 0, 61, .18);
+    border:1px solid rgba(255,0,61,.18);
   }
 
   h1{
@@ -75,7 +74,6 @@
     line-height:1.35;
   }
 
-  /* Massage image */
   .massageImg{
     width:100%;
     max-width:380px;
@@ -85,19 +83,24 @@
     box-shadow:
       0 0 22px rgba(255,0,80,.55),
       0 22px 60px rgba(0,0,0,.65);
-    border:1px solid rgba(255, 0, 61, .20);
+    border:1px solid rgba(255,0,61,.20);
   }
 
-  /* Time selector */
+  .divider{
+    height:1px;
+    background: linear-gradient(90deg, transparent, rgba(255,0,61,.35), transparent);
+    margin:10px 0 14px;
+  }
+
   .timeWrap{
-    margin: 6px auto 10px;
+    margin:6px auto 10px;
     width:min(420px,100%);
     text-align:left;
   }
   .timeLabel{
     font-weight:950;
     color:#ffd6df;
-    margin: 0 0 10px;
+    margin:0 0 10px;
     letter-spacing:.3px;
   }
   .timeOptions{
@@ -106,7 +109,7 @@
     flex-wrap:wrap;
   }
   .pill{
-    border:1px solid rgba(255, 122, 162, .25);
+    border:1px solid rgba(255,122,162,.25);
     background: rgba(0,0,0,.35);
     color:#ffd6df;
     padding:12px 14px;
@@ -120,14 +123,14 @@
   .pill:active{ transform: scale(.98); }
   .pill.selected{
     background: rgba(255,0,61,.22);
-    border-color: rgba(255, 0, 61, .55);
+    border-color: rgba(255,0,61,.55);
     box-shadow: 0 0 18px rgba(255,0,61,.25);
   }
 
   .buttons{
     position:relative;
     height:110px;
-    margin-top: 10px;
+    margin-top:10px;
   }
 
   button{
@@ -140,7 +143,7 @@
     transition: transform .18s ease;
     -webkit-tap-highlight-color: transparent;
     user-select:none;
-    touch-action: manipulation;
+    touch-action:manipulation;
   }
 
   #yesBtn{
@@ -161,7 +164,7 @@
     top:50%;
     transform:translate(-50%,-50%) scale(1);
     box-shadow:0 0 12px rgba(255,255,255,.08);
-    border:1px solid rgba(255, 255, 255, .10);
+    border:1px solid rgba(255,255,255,.10);
   }
 
   .message{
@@ -173,23 +176,75 @@
     font-weight:950;
   }
 
-  /* Final message */
   .finalBox{
     display:none;
-    margin-top: 14px;
-    padding: 14px 14px 12px;
+    margin-top:14px;
+    padding:14px 14px 12px;
     border-radius:18px;
     background: rgba(0,0,0,.35);
-    border:1px solid rgba(255, 0, 61, .20);
-    box-shadow: 0 0 24px rgba(255,0,61,.15);
+    border:1px solid rgba(255,0,61,.20);
+    box-shadow:0 0 24px rgba(255,0,61,.15);
     animation:fadeIn .8s forwards;
+    text-align:left;
   }
+  .finalTitle{
+    font-weight:1000;
+    color:#ffd6df;
+    margin:0 0 8px;
+    letter-spacing:.2px;
+  }
+  .finalText{
+    font-weight:900;
+    color:#ffd6df;
+    line-height:1.35;
+    margin:0;
+    opacity:.97;
+    white-space:pre-line;
+  }
+  .bookingId{
+    margin-top:10px;
+    display:inline-flex;
+    gap:10px;
+    align-items:center;
+    padding:10px 12px;
+    border-radius:14px;
+    background: rgba(255,0,61,.12);
+    border:1px solid rgba(255,0,61,.25);
+    color:#ffd6df;
+    font-weight:950;
+    width:100%;
+    justify-content:space-between;
+  }
+  .bookingLeft{
+    display:flex;
+    gap:10px;
+    align-items:center;
+    min-width:0;
+  }
+  .bookingVal{
+    letter-spacing:.8px;
+    white-space:nowrap;
+    overflow:hidden;
+    text-overflow:ellipsis;
+  }
+  .copyBtn{
+    border:1px solid rgba(255,255,255,.18);
+    background: rgba(0,0,0,.35);
+    color:#ffd6df;
+    padding:8px 10px;
+    border-radius:999px;
+    cursor:pointer;
+    font-weight:950;
+    -webkit-tap-highlight-color: transparent;
+    flex: 0 0 auto;
+  }
+  .copyBtn:active{ transform: scale(.98); }
+
   @keyframes fadeIn{
     from{opacity:0;transform:translateY(10px) scale(.96);}
     to{opacity:1;transform:translateY(0) scale(1);}
   }
 
-  /* Music */
   .musicBtn{
     position:fixed;
     right:14px;
@@ -206,16 +261,8 @@
     -webkit-tap-highlight-color: transparent;
   }
 
-  /* Subtle divider */
-  .divider{
-    height:1px;
-    background: linear-gradient(90deg, transparent, rgba(255,0,61,.35), transparent);
-    margin: 10px 0 14px;
-  }
-
-  /* Reduce motion support */
   @media (prefers-reduced-motion: reduce){
-    *{ animation: none !important; transition: none !important; }
+    *{ animation:none !important; transition:none !important; }
   }
 </style>
 </head>
@@ -223,7 +270,6 @@
 <body>
 <div class="glowBg"></div>
 
-<!-- Optional music (upload music.mp3 to your repo, or remove this audio/button) -->
 <audio id="bgMusic" src="music.mp3" loop preload="auto"></audio>
 <button class="musicBtn" id="musicToggle" aria-label="Toggle music">🔈 Music</button>
 
@@ -231,7 +277,6 @@
   <h1>Anzia, would you like a massage appointment? 💆‍♀️🔥</h1>
   <p>February 14 • Candlelight • Slow hands • Deep relaxation 😌</p>
 
-  <!-- Upload your own image as massage.jpg in the repo -->
   <img class="massageImg" src="massage.jpg" alt="Massage vibe photo">
 
   <div class="divider"></div>
@@ -245,14 +290,23 @@
   </div>
 
   <div class="buttons">
-    <button id="yesBtn">Yes 😍</button>
-    <button id="noBtn">No 🙈</button>
+    <button id="yesBtn" type="button">Yes 😍</button>
+    <button id="noBtn" type="button">No 🙈</button>
   </div>
 
   <div class="message" id="message"></div>
 
   <div class="finalBox" id="finalBox">
-    <div id="finalText" style="font-weight:950; color:#ffd6df; line-height:1.35;"></div>
+    <div class="finalTitle">Booking Confirmation</div>
+    <p class="finalText" id="finalText"></p>
+
+    <div class="bookingId" aria-label="Booking ID">
+      <div class="bookingLeft">
+        <span>Booking ID:</span>
+        <span id="bookingIdValue" class="bookingVal"></span>
+      </div>
+      <button class="copyBtn" id="copyBtn" type="button">Copy</button>
+    </div>
   </div>
 </div>
 
@@ -263,6 +317,8 @@
   const finalBox = document.getElementById("finalBox");
   const finalText = document.getElementById("finalText");
   const timeOptions = document.getElementById("timeOptions");
+  const bookingIdValue = document.getElementById("bookingIdValue");
+  const copyBtn = document.getElementById("copyBtn");
 
   // Time selection
   let selectedTime = "Night 🌙";
@@ -274,7 +330,7 @@
     selectedTime = pill.dataset.time;
   });
 
-  // Music (iPad/iPhone needs a user gesture to start audio)
+  // Music (needs user gesture on iOS/iPadOS)
   const bgMusic = document.getElementById("bgMusic");
   const musicToggle = document.getElementById("musicToggle");
   let musicOn = false;
@@ -295,11 +351,10 @@
     }
   }
 
-  // Start music on first tap/click anywhere (best iPad compatibility)
   window.addEventListener("pointerdown", async () => {
     if(musicOn) return;
     await startMusic();
-  }, { once: true });
+  }, { once:true });
 
   musicToggle.addEventListener("click", async () => {
     try{
@@ -329,9 +384,18 @@
     if(navigator.vibrate) navigator.vibrate(ms);
   }
 
-  // Use pointer events for best iPad behavior (covers mouse + touch + Apple Pencil)
-  noBtn.addEventListener("pointerdown", (e) => {
-    e.preventDefault();
+  function generateBookingId(){
+    const chars = "ABCDEFGHJKMNPQRSTUVWXYZ23456789";
+    let tail = "";
+    for(let i=0;i<5;i++){
+      tail += chars[Math.floor(Math.random()*chars.length)];
+    }
+    return `ANZ-0214-${tail}`;
+  }
+
+  function moveNo(e){
+    if(e) e.preventDefault();
+
     attempts++;
 
     // YES grows
@@ -340,7 +404,6 @@
 
     // “You sure?”
     message.textContent = sureMessages[Math.min(attempts - 1, sureMessages.length - 1)];
-
     vibrate(25);
 
     // After 6, NO becomes YES
@@ -350,23 +413,29 @@
       noBtn.style.color = "#fff";
       noBtn.onclick = () => yesBtn.click();
     }
-  }, { passive: false });
+  }
 
-  yesBtn.addEventListener("pointerdown", (e) => {
-    e.preventDefault();
+  // NO: handle both pointer + click for maximum compatibility
+  noBtn.addEventListener("pointerdown", moveNo, { passive:false });
+  noBtn.addEventListener("click", moveNo);
+
+  function confirmAppointment(e){
+    if(e) e.preventDefault();
 
     message.textContent = "Perfect choice 😌🔥";
 
+    const bookingId = generateBookingId();
+    bookingIdValue.textContent = bookingId;
+
     finalText.textContent =
-`Thank you for accepting my invitation, Anzia…
-On February 14 at ${selectedTime},
-I’ll take my time, set the mood,
-and remind you exactly how cherished you are.
-Relax… I’ve got you 😘`;
+`Thank you for choosing our services 😌
+Your massage appointment is confirmed for
+February 14 at ${selectedTime}.
+We look forward to providing your relaxation experience. 💆‍♀️🔥`;
 
     finalBox.style.display = "block";
 
-    // Hide buttons so nothing overlaps on small screens
+    // Hide buttons so nothing overlaps
     yesBtn.style.display = "none";
     noBtn.style.display = "none";
 
@@ -375,7 +444,23 @@ Relax… I’ve got you 😘`;
     timeOptions.style.opacity = "0.95";
 
     vibrate(40);
-  }, { passive: false });
+  }
+
+  // YES: handle both pointer + click for maximum compatibility
+  yesBtn.addEventListener("pointerdown", confirmAppointment, { passive:false });
+  yesBtn.addEventListener("click", confirmAppointment);
+
+  // Copy Booking ID
+  copyBtn.addEventListener("click", async () => {
+    const text = bookingIdValue.textContent || "";
+    try{
+      await navigator.clipboard.writeText(text);
+      copyBtn.textContent = "Copied!";
+      setTimeout(()=> copyBtn.textContent = "Copy", 1200);
+    }catch(e){
+      message.textContent = "Copy not supported here — Booking ID: " + text;
+    }
+  });
 </script>
 
 </body>

@@ -1,0 +1,506 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Massage Appointment</title>
+
+<style>
+  :root{
+    --bg1:#2a0000;
+    --bg2:#000000;
+    --red:#ff003d;
+    --red2:#ff3b6f;
+    --pink:#ff7aa2;
+    --card1:#120000;
+    --card2:#1a0000;
+  }
+
+  *{ box-sizing:border-box; }
+  body{
+    margin:0;
+    min-height:100vh;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-family:"Trebuchet MS",system-ui,-apple-system,Segoe UI,Roboto,Arial;
+    background:radial-gradient(circle at top,var(--bg1),var(--bg2));
+    overflow:hidden;
+    color:#fff;
+  }
+
+  /* soft “tantric” glow */
+  .glowBg{
+    position:fixed;
+    inset:-40vh;
+    background:
+      radial-gradient(circle at 20% 30%, rgba(255,0,61,.22), transparent 45%),
+      radial-gradient(circle at 80% 20%, rgba(255,59,111,.18), transparent 45%),
+      radial-gradient(circle at 50% 85%, rgba(255,122,162,.10), transparent 55%);
+    filter: blur(22px);
+    pointer-events:none;
+    z-index:0;
+  }
+
+  .card{
+    width:min(560px,92vw);
+    background:linear-gradient(145deg,var(--card1),var(--card2));
+    border-radius:24px;
+    padding:26px 22px 22px;
+    text-align:center;
+    position:relative;
+    z-index:2;
+    box-shadow:
+      0 0 28px rgba(255,0,61,.35),
+      0 0 70px rgba(255,0,120,.22),
+      0 24px 80px rgba(0,0,0,.55);
+    border: 1px solid rgba(255, 0, 61, .18);
+  }
+
+  h1{
+    margin:0 0 10px;
+    font-size:clamp(24px,5vw,36px);
+    color:var(--red2);
+    text-shadow:0 0 14px rgba(255,0,61,.55);
+    letter-spacing:.2px;
+  }
+
+  p{
+    margin:0 0 16px;
+    opacity:.92;
+    color:#ffd6df;
+  }
+
+  /* Massage image */
+  .massageImg{
+    width:100%;
+    max-width:380px;
+    border-radius:18px;
+    margin:14px auto 18px;
+    display:block;
+    box-shadow:
+      0 0 22px rgba(255,0,80,.55),
+      0 22px 60px rgba(0,0,0,.65);
+    border:1px solid rgba(255, 0, 61, .20);
+  }
+
+  /* Time selector */
+  .timeWrap{
+    margin: 6px 0 12px;
+    text-align:left;
+    width:min(420px,100%);
+    margin-left:auto;
+    margin-right:auto;
+  }
+  .timeLabel{
+    font-weight:900;
+    color:#ffd6df;
+    margin: 0 0 10px;
+    letter-spacing:.3px;
+  }
+  .timeOptions{
+    display:flex;
+    gap:10px;
+    flex-wrap:wrap;
+  }
+  .pill{
+    border:1px solid rgba(255, 122, 162, .25);
+    background: rgba(0,0,0,.35);
+    color:#ffd6df;
+    padding:10px 14px;
+    border-radius:999px;
+    cursor:pointer;
+    font-weight:900;
+    transition: transform .12s ease, background .12s ease, border-color .12s ease;
+    user-select:none;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .pill:active{ transform: scale(.98); }
+  .pill.selected{
+    background: rgba(255,0,61,.22);
+    border-color: rgba(255, 0, 61, .55);
+    box-shadow: 0 0 18px rgba(255,0,61,.25);
+  }
+
+  .buttons{
+    position:relative;
+    height:96px;
+    margin-top: 10px;
+  }
+
+  button{
+    border:none;
+    border-radius:999px;
+    padding:14px 22px;
+    font-size:16px;
+    font-weight:950;
+    cursor:pointer;
+    transition: transform .18s ease;
+    -webkit-tap-highlight-color: transparent;
+    user-select:none;
+  }
+
+  #yesBtn{
+    background:linear-gradient(45deg,var(--red),var(--red2));
+    color:#fff;
+    position:absolute;
+    left:40%;
+    top:50%;
+    transform:translate(-50%,-50%) scale(1);
+    box-shadow:0 0 18px rgba(255,59,111,.55);
+  }
+
+  #noBtn{
+    background:#0f0f0f;
+    color:#bbb;
+    position:absolute;
+    left:60%;
+    top:50%;
+    transform:translate(-50%,-50%) scale(1);
+    box-shadow:0 0 12px rgba(255,255,255,.08);
+    border:1px solid rgba(255, 255, 255, .10);
+  }
+
+  .message{
+    margin-top:18px;
+    min-height:28px;
+    font-size:17px;
+    color:var(--pink);
+    text-shadow:0 0 10px rgba(255,0,61,.35);
+    font-weight:900;
+  }
+
+  /* Candle flicker layer */
+  .candles{
+    position:fixed;
+    inset:0;
+    pointer-events:none;
+    z-index:1;
+    opacity:.95;
+  }
+
+  .candle{
+    position:absolute;
+    bottom:0;
+    width:72px;
+    height:160px;
+    filter: drop-shadow(0 10px 18px rgba(0,0,0,.65));
+  }
+  .wax{
+    position:absolute;
+    bottom:0;
+    left:50%;
+    transform:translateX(-50%);
+    width:36px;
+    height:96px;
+    border-radius:16px;
+    background: linear-gradient(180deg, rgba(255,255,255,.16), rgba(255,255,255,.06));
+    border:1px solid rgba(255, 255, 255, .10);
+  }
+  .wick{
+    position:absolute;
+    bottom:92px;
+    left:50%;
+    transform:translateX(-50%);
+    width:3px;
+    height:10px;
+    background: rgba(255,255,255,.20);
+    border-radius:2px;
+  }
+  .flame{
+    position:absolute;
+    bottom:100px;
+    left:50%;
+    transform:translateX(-50%);
+    width:18px;
+    height:28px;
+    border-radius: 50% 50% 50% 50%;
+    background: radial-gradient(circle at 50% 30%, rgba(255,255,255,.95), rgba(255,200,120,.65) 40%, rgba(255,0,61,.20) 70%, transparent 75%);
+    animation: flicker 1.3s infinite;
+  }
+  .glow{
+    position:absolute;
+    bottom:92px;
+    left:50%;
+    transform:translateX(-50%);
+    width:90px;
+    height:90px;
+    background: radial-gradient(circle, rgba(255,0,61,.22), transparent 65%);
+    filter: blur(6px);
+    animation: glowPulse 1.8s infinite;
+  }
+
+  @keyframes flicker{
+    0%   { transform:translateX(-50%) scale(1) rotate(-1deg); opacity:.95; }
+    20%  { transform:translateX(-50%) scale(1.05) rotate(2deg); opacity:.85; }
+    40%  { transform:translateX(-50%) scale(.98) rotate(-2deg); opacity:.95; }
+    60%  { transform:translateX(-50%) scale(1.07) rotate(1deg); opacity:.90; }
+    80%  { transform:translateX(-50%) scale(1.00) rotate(-1deg); opacity:.95; }
+    100% { transform:translateX(-50%) scale(1.03) rotate(2deg); opacity:.88; }
+  }
+  @keyframes glowPulse{
+    0%,100% { opacity:.75; transform:translateX(-50%) scale(1); }
+    50%     { opacity:1;   transform:translateX(-50%) scale(1.08); }
+  }
+
+  /* Hearts */
+  .hearts{
+    pointer-events:none;
+    position:fixed;
+    inset:0;
+    z-index:4;
+    overflow:hidden;
+  }
+  .heart{
+    position:absolute;
+    font-size:22px;
+    animation: floatUp linear forwards;
+    filter: drop-shadow(0 10px 8px rgba(0,0,0,.25));
+  }
+  @keyframes floatUp{
+    from { transform: translateY(0) scale(1); opacity: .95; }
+    to   { transform: translateY(-120vh) scale(1.4); opacity: 0; }
+  }
+
+  /* Music toggle */
+  .musicBtn{
+    position:fixed;
+    right:14px;
+    bottom:14px;
+    z-index:10;
+    border:1px solid rgba(255,255,255,.18);
+    border-radius:999px;
+    padding:10px 12px;
+    background: rgba(0,0,0,.45);
+    color:#ffd6df;
+    box-shadow: 0 14px 40px rgba(0,0,0,.35);
+    font-weight:950;
+    cursor:pointer;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* Subtle divider */
+  .divider{
+    height:1px;
+    background: linear-gradient(90deg, transparent, rgba(255,0,61,.35), transparent);
+    margin: 10px 0 14px;
+  }
+
+  /* Confirm panel */
+  .confirm{
+    display:none;
+    margin-top: 14px;
+    padding: 14px 14px 12px;
+    border-radius:18px;
+    background: rgba(0,0,0,.35);
+    border:1px solid rgba(255, 0, 61, .20);
+    box-shadow: 0 0 24px rgba(255,0,61,.15);
+  }
+  .confirm.show{ display:block; }
+  .confirmTitle{
+    font-weight:950;
+    color:#ffd6df;
+    margin:0 0 6px;
+    font-size:18px;
+  }
+  .confirmText{
+    margin:0;
+    color:#ffd6df;
+    opacity:.95;
+  }
+</style>
+</head>
+
+<body>
+<div class="glowBg"></div>
+
+<!-- Candles -->
+<div class="candles" aria-hidden="true">
+  <div class="candle" style="left:6vw;">
+    <div class="glow"></div><div class="flame"></div><div class="wick"></div><div class="wax"></div>
+  </div>
+  <div class="candle" style="left:18vw; transform:scale(.85); opacity:.9;">
+    <div class="glow"></div><div class="flame" style="animation-duration:1.1s;"></div><div class="wick"></div><div class="wax"></div>
+  </div>
+  <div class="candle" style="right:18vw; transform:scale(.85); opacity:.9;">
+    <div class="glow"></div><div class="flame" style="animation-duration:1.15s;"></div><div class="wick"></div><div class="wax"></div>
+  </div>
+  <div class="candle" style="right:6vw;">
+    <div class="glow"></div><div class="flame" style="animation-duration:1.25s;"></div><div class="wick"></div><div class="wax"></div>
+  </div>
+</div>
+
+<!-- Music (upload your own file as music.mp3) -->
+<audio id="bgMusic" src="music.mp3" loop preload="auto"></audio>
+<button class="musicBtn" id="musicToggle" aria-label="Toggle music">🔈 Music</button>
+
+<div class="card">
+  <h1>Anzia, would you like a massage appointment? 💆‍♀️🔥</h1>
+  <p>Tantric vibes. Soft lights. Deep relaxation. Your choice 😌</p>
+
+  <!-- Upload your own image as massage.jpg -->
+  <img class="massageImg" src="massage.jpg" alt="Massage vibe photo">
+
+  <div class="divider"></div>
+
+  <div class="timeWrap">
+    <div class="timeLabel">Pick a time:</div>
+    <div class="timeOptions" id="timeOptions">
+      <div class="pill selected" data-value="Tonight">Tonight 🌙</div>
+      <div class="pill" data-value="Tomorrow">Tomorrow ☀️</div>
+      <div class="pill" data-value="Surprise">Surprise me 🎁</div>
+    </div>
+  </div>
+
+  <div class="buttons">
+    <button id="yesBtn">Yes 😍</button>
+    <button id="noBtn">No 🙈</button>
+  </div>
+
+  <div class="message" id="message"></div>
+
+  <div class="confirm" id="confirm">
+    <p class="confirmTitle">Appointment confirmed ✅</p>
+    <p class="confirmText" id="confirmText"></p>
+  </div>
+</div>
+
+<div class="hearts" id="hearts"></div>
+
+<script>
+  const yesBtn = document.getElementById("yesBtn");
+  const noBtn = document.getElementById("noBtn");
+  const message = document.getElementById("message");
+  const hearts = document.getElementById("hearts");
+
+  const timeOptions = document.getElementById("timeOptions");
+  let chosenTime = "Tonight";
+
+  // Music
+  const bgMusic = document.getElementById("bgMusic");
+  const musicToggle = document.getElementById("musicToggle");
+  let musicOn = false;
+
+  function setMusicLabel(){
+    musicToggle.textContent = (musicOn ? "🔊 Music" : "🔈 Music");
+  }
+  async function startMusic(){
+    try{
+      bgMusic.volume = 0.22; // soft
+      await bgMusic.play();
+      musicOn = true;
+      setMusicLabel();
+    }catch(e){
+      // Autoplay may be blocked until a click/tap
+      musicOn = false;
+      setMusicLabel();
+    }
+  }
+
+  musicToggle.addEventListener("click", async () => {
+    try{
+      if(!musicOn){
+        await startMusic();
+      }else{
+        bgMusic.pause();
+        musicOn = false;
+        setMusicLabel();
+      }
+    }catch(e){}
+  });
+
+  // Start music on first user gesture (works on iOS/iPadOS)
+  let firstGesture = false;
+  window.addEventListener("pointerdown", async () => {
+    if(firstGesture) return;
+    firstGesture = true;
+    await startMusic();
+  }, { once: true });
+
+  // Time selection
+  timeOptions.addEventListener("click", (e) => {
+    const pill = e.target.closest(".pill");
+    if(!pill) return;
+    [...timeOptions.querySelectorAll(".pill")].forEach(p => p.classList.remove("selected"));
+    pill.classList.add("selected");
+    chosenTime = pill.dataset.value;
+  });
+
+  // “You sure?” messages + YES grows
+  let attempts = 0;
+  const sureMessages = [
+    "You sure? 😏",
+    "Positive? 👀",
+    "Think again… 💭",
+    "I can warm the oil… 🕯️",
+    "Last chance to say no… 😌"
+  ];
+
+  const confirm = document.getElementById("confirm");
+  const confirmText = document.getElementById("confirmText");
+
+  function popHearts(){
+    for(let i=0;i<22;i++){
+      const h = document.createElement("span");
+      h.className = "heart";
+      h.textContent = Math.random() > 0.5 ? "🖤" : "❤️";
+      h.style.left = Math.random() * 100 + "vw";
+      h.style.bottom = "-22px";
+      h.style.animationDuration = (2.0 + Math.random() * 1.8) + "s";
+      h.style.fontSize = (18 + Math.random() * 18) + "px";
+      hearts.appendChild(h);
+      h.addEventListener("animationend", () => h.remove());
+    }
+  }
+
+  function vibrate(ms){
+    // nice extra on mobile; harmless if unsupported
+    if(navigator.vibrate) navigator.vibrate(ms);
+  }
+
+  noBtn.addEventListener("click", () => {
+    attempts++;
+
+    // YES grows
+    const scale = Math.min(1 + attempts * 0.18, 2.6);
+    yesBtn.style.transform = `translate(-50%,-50%) scale(${scale})`;
+
+    // “You sure?”
+    message.textContent = sureMessages[Math.min(attempts - 1, sureMessages.length - 1)];
+
+    // tiny vibration for spice
+    vibrate(25);
+
+    // After 6, NO gives up
+    if(attempts >= 6){
+      noBtn.textContent = "Okay… YES 😩";
+      noBtn.style.background = "linear-gradient(45deg,#ff0040,#ff3366)";
+      noBtn.style.color = "#fff";
+      noBtn.style.borderColor = "transparent";
+      noBtn.onclick = () => yesBtn.click();
+    }
+  });
+
+  yesBtn.addEventListener("click", () => {
+    message.textContent = "Perfect 😌🔥";
+    popHearts();
+    vibrate(40);
+
+    // Confirm panel with chosen time
+    confirmText.textContent =
+      `Anzia, your massage appointment is set for: ${chosenTime}.`;
+
+    confirm.classList.add("show");
+
+    // Hide buttons so nothing overlaps
+    yesBtn.style.display = "none";
+    noBtn.style.display = "none";
+    timeOptions.style.pointerEvents = "none";
+    timeOptions.style.opacity = "0.95";
+  });
+
+  setMusicLabel();
+</script>
+
+</body>
+</html>
